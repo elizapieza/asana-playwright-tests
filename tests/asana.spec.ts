@@ -1,7 +1,6 @@
-import {test, expect } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
-test("user can login", async ({ page }) => {
-
+async function login(page: Page) {
     await page.goto("https://animated-gingersnap-8cf7f2.netlify.app/");
     
     const usernameInput = page.getByRole('textbox', { name: 'Username' });
@@ -20,5 +19,27 @@ test("user can login", async ({ page }) => {
 
     await signInButton.click();
 
-    await page.getByRole('heading', { name: 'Projects' }).click();
+    await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible();
+}
+
+test("Implement user authentication is in TODO w/ high priority & feature", async ({ page }) => {
+
+    await login(page);
+
+    const project = page.getByRole('button', { name: /Web Application/ });
+    const toDo = page.getByRole('heading', {name:/To Do/}).locator('..');
+    const task = toDo.getByRole('heading', { name: 'Implement user authentication' }).locator('..');
+    const featureTag = task.getByText('Feature');
+    const highPriorityTag = task.getByText('High Priority');
+
+    await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible();
+
+    await expect(project).toBeVisible();
+    await project.click();
+
+    await expect(toDo).toBeVisible();
+
+    await expect(task).toBeVisible();
+    await expect(featureTag).toBeVisible();
+    await expect(highPriorityTag).toBeVisible();
 });
